@@ -112,6 +112,46 @@ async function getListOfSKUsForSubProduct(driver) {
   return result;
 }
 
+async function getSpecsForSKU(driver) {
+  let xpath = '//section[@class="blade specs-blade specifications"]';
+  let locator = By.xpath(xpath);
+  let specs = await driver.findElements(locator);
+
+  let result = {};
+
+  for (let i = 0; i < specs.length; i++) {
+    let xpath1 = `//section[@class="blade specs-blade specifications"][${
+      i + 1
+    }]//h2`;
+    let locator1 = By.xpath(xpath1);
+    let specTitle = (
+      await driver.findElement(locator1).getAttribute("innerText")
+    ).trim();
+
+    result[specTitle] = {};
+
+    let xpath2 = `//section[@class="blade specs-blade specifications"][${
+      i + 1
+    }]//ul[@class="specs-list"]//li//span[@class="label"]`;
+    let locator2 = By.xpath(xpath2);
+    let specLabels = await driver.findElements(locator2);
+
+    let xpath3 = `//section[@class="blade specs-blade specifications"][${
+      i + 1
+    }]//ul[@class="specs-list"]//li//span[@class="value"]`;
+    let locator3 = By.xpath(xpath3);
+    let specValues = await driver.findElements(locator3);
+
+    for (let j = 0; j < specLabels.length; j++) {
+      let specLabel = (await specLabels[j].getAttribute("innerText")).trim();
+      let specValue = (await specValues[j].getAttribute("innerText")).trim();
+      result[specTitle][specLabel] = specValue;
+    }
+  }
+
+  return result;
+}
+
 async function main() {
   await driver.get("https://ark.intel.com/");
 
@@ -141,6 +181,26 @@ async function main() {
           subproduct.skus = await getListOfSKUsForSubProduct(driver);
         } catch (e) {
           console.error(e);
+        }
+      }
+    }
+  }
+
+  for (let i in categoryList) {
+    let category = categoryList[i];
+    for (let j in category.products) {
+      let product = category.products[j];
+      for (let k in product.subproducts) {
+        let subproduct = product.subproducts[k];
+        for (let l in subproduct.skus) {
+          let sku = subproduct.skus[l];
+          console.log(sku.Url);
+          await driver.get(sku.Url);
+          try {
+            sku.specs = await getSpecsForSKU(driver);
+          } catch (e) {
+            console.error(e);
+          }
         }
       }
     }
