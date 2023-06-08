@@ -43,42 +43,20 @@ CREATE TABLE Products (
 	CONSTRAINT UQ_Product_Url UNIQUE (Url)
 );
 
-CREATE TABLE SpecificationCategories (
-	Id 		INT NOT NULL,
-	Name 	TEXT NOT NULL,
-	
-	CONSTRAINT PK_SpecificationCategories PRIMARY KEY (Id),
-	CONSTRAINT UQ_SpecificationCategories_Name UNIQUE (Name)
-);
-
-CREATE TABLE SpecificationProperties (
-	SpecificationCategory	INT NOT NULL,
-	Id 						INT NOT NULL,
-	Name 					TEXT NOT NULL,
-	
-	CONSTRAINT PK_SpecificationProperties PRIMARY KEY (SpecificationCategory, Id),
-	CONSTRAINT FK_SpecificationProperties_SpecificationCategories FOREIGN KEY (SpecificationCategory) REFERENCES SpecificationCategories (Id),
-	CONSTRAINT UQ_SpecificationProperties_Name UNIQUE (Name)
-);
-
 CREATE TABLE ProductsSpecifications (
 	ProductType 			INT NOT NULL,
 	ProductBrand 			INT NOT NULL,
 	ProductSerie 			INT NOT NULL,
 	ProductId				INT NOT NULL,
-	SpecificationCategory	INT NOT NULL,
-	SpecificationProperty	INT NOT NULL,
+	Specification			TEXT NOT NULL,
 	Value 					TEXT NOT NULL,
 	
-	CONSTRAINT PK_ProductsSpecifications PRIMARY KEY (ProductType, ProductBrand, ProductSerie, ProductId, SpecificationCategory, SpecificationProperty),
-	CONSTRAINT FK_ProductsSpecifications_Products FOREIGN KEY (ProductType, ProductBrand, ProductSerie, ProductId) REFERENCES Products (ProductType, ProductBrand, ProductSerie, Id),
-	CONSTRAINT FK_ProductsSpecifications_SpecificationProperties FOREIGN KEY (SpecificationCategory, SpecificationProperty) REFERENCES SpecificationProperties (SpecificationCategory, Id)
+	CONSTRAINT PK_ProductsSpecifications PRIMARY KEY (ProductType, ProductBrand, ProductSerie, ProductId, Specification),
+	CONSTRAINT FK_ProductsSpecifications_Products FOREIGN KEY (ProductType, ProductBrand, ProductSerie, ProductId) REFERENCES Products (ProductType, ProductBrand, ProductSerie, Id)
 );
 
 DROP TABLE ProductTypes;
 DROP TABLE ProductBrands;
 DROP TABLE ProductSeries;
 DROP TABLE Products;
-DROP TABLE SpecificationCategories;
-DROP TABLE SpecificationProperties;
 DROP TABLE ProductsSpecifications;

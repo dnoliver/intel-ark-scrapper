@@ -16,32 +16,44 @@ sys     0m0.983s
 node schema.js
 ```
 
-## Product Types
+## Database Overview
+
+### Product Types
 
 ```bash
 jq '.[].name' db.json
 ```
 
-## Product Brands
+### Product Brands
 
 ```bash
 jq '.[0].products[].name' db.json
 ```
 
-## Product Series
+### Product Series
 
 ```bash
 jq '.[0].products[0].subproducts[].name' db.json
 ```
 
-## Products
+### Products
 
 ```bash
 jq '.[0].products[0].subproducts[0].skus[]."Product Name"' db.json
 ```
 
-## Specification Categories
+### Specification Categories
 
 ```bash
 jq '.[0].products[0].subproducts[0].skus[0].specs | keys' db.json
+```
+
+## Data Loading
+
+```bash
+\copy ProductTypes FROM 'ProductTypes.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF8';
+\copy ProductBrands FROM 'ProductBrands.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF8';
+\copy ProductSeries FROM 'ProductSeries.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF8';
+\copy Products FROM 'Products.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF8';
+\copy ProductsSpecifications FROM 'ProductsSpecifications.csv' DELIMITER ',' CSV HEADER ENCODING 'UTF8';
 ```
